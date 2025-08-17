@@ -46,7 +46,7 @@ export default function ExpensesPage() {
     const qs = new URLSearchParams();
     if (range.from) qs.set('from', range.from);
     if (range.to) qs.set('to', range.to);
-    qs.set('categoryId', categoryKey);
+    if (categoryKey !== ALL_CATEGORIES) qs.set('categoryId', categoryKey);
     const q = qs.toString();
     return `/expenses${q ? `?${q}` : ''}`;
   }

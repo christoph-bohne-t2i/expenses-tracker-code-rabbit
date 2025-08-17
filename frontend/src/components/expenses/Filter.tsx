@@ -1,7 +1,7 @@
 'use client';
 
 import type { Category } from '@/lib/types';
-import { formatDateLabel, toISODate } from '@/lib/date';
+import { formatDateLabel, parseISODate, toISODate } from '@/lib/date';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -18,8 +18,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
 
 type Props = {
   categoryKey: string;
@@ -41,11 +39,6 @@ export default function Filters({
   categories,
 }: Props) {
   const ALL_CATEGORIES = 'All';
-
-  const cats = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => api<Category[]>('/categories'),
-  });
 
   return (
     <Card>
@@ -88,7 +81,7 @@ export default function Filters({
               <PopoverContent align="start" className="p-0">
                 <Calendar
                   mode="single"
-                  selected={from ? new Date(from) : undefined}
+                  selected={from ? parseISODate(from) : undefined}
                   onSelect={(d) =>
                     onDateChange({ from: d ? toISODate(d) : undefined, to })
                   }
@@ -114,7 +107,7 @@ export default function Filters({
               <PopoverContent align="start" className="p-0">
                 <Calendar
                   mode="single"
-                  selected={to ? new Date(to) : undefined}
+                  selected={to ? parseISODate(to) : undefined}
                   onSelect={(d) =>
                     onDateChange({ from, to: d ? toISODate(d) : undefined })
                   }
@@ -130,7 +123,7 @@ export default function Filters({
               variant="ghost"
               className="font-normal"
               onClick={onClear}
-              disabled={!from && !to && categoryKey === 'ALL'}
+              disabled={!from && !to && categoryKey === ALL_CATEGORIES}
             >
               Clear filters
             </Button>
